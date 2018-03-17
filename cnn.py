@@ -36,9 +36,13 @@ transform = transforms.Compose([
                                 std = [ 0.229, 0.224, 0.225 ]),
 ])
 train_path="/home/soham/Documents/Deep Learning/hackathon/train_/train"
+val_path="/home/soham/Documents/Deep Learning/hackathon/train_/val"
+
 train_data=datasets.ImageFolder(train_path,transform)
+val_data=datasets.ImageFolder(val_path,transform)
 
 train_loader=DataLoader(train_data,batch_size=4,shuffle=True,num_workers=1)
+val_loader=DataLoader(val_path,batch_size=4,shuffle=True,num_workers=1)
 
 net=models.resnet18(pretrained=False)
 net.fc=nn.Linear(512,14)
@@ -48,12 +52,13 @@ learn_rate=0.1
 optimizer=optim.SGD(net.parameters(),lr=learn_rate,momentum=0.9)
 #net=net.cuda()
 train_loss_vs_epoch=[]
+val_loss_vs_epoch=[]
 
 for epoch in range(30):
     print "running epoch "+str(epoch)
     train_loss=0.0
+    val_loss=0.0
     for batch in train_loader:
-        print "hello"
         net=net.train(True)
         inputs,labels=batch
         inputs,labels=Variable(inputs),Variable(labels)
@@ -67,6 +72,22 @@ for epoch in range(30):
         train_loss+=loss.data[0]
     
     train_loss_vs_epoch.append(train_loss/14)
+    
+    for batch in val_loader:
+        net=net.train(False)
+        inputs,labels=batch
+        inputs,labels=Variable(inputs),Variable(labels)
+        #inputs,labels=inputs.cuda(),labels.cuda()
+        outputs=net(inputs)
+        loss=criterion(F.log_softmax(outputs),labels)
+        val_loss+=loss.data[0]
+    
+    val_loss_vs_epoch.append(val_loss/14)
+    
+    plt.plot(train_loss_vs_epoch,'r',val_loss_vs_epoch,'b')
+    plt.savefig('plot.png')
+        
+        
 
     plt.plot(train_loss_vs_epoch,'r')
     plt.savefig('plt.png')

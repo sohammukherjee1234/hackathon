@@ -30,12 +30,12 @@ import matplotlib.pyplot as plt
 
 # LOADERS
 transform = transforms.Compose([
+            transforms.Scale((224,224)),
             transforms.ToTensor(),
             transforms.Normalize(mean = [ 0.485, 0.456, 0.406 ],
                                 std = [ 0.229, 0.224, 0.225 ]),
 ])
-
-train_path="/home/soham/Documents/Deep Learning/hackathon/train_"
+train_path="/home/soham/Documents/Deep Learning/hackathon/train_/train"
 train_data=datasets.ImageFolder(train_path,transform)
 
 train_loader=DataLoader(train_data,batch_size=4,shuffle=True,num_workers=1)
@@ -43,15 +43,17 @@ train_loader=DataLoader(train_data,batch_size=4,shuffle=True,num_workers=1)
 net=models.resnet18(pretrained=False)
 net.fc=nn.Linear(512,14)
 
-criterion=nn.MSELoss(size_average=True)
+criterion=nn.CrossEntropyLoss(size_average=True)
 learn_rate=0.1
 optimizer=optim.SGD(net.parameters(),lr=learn_rate,momentum=0.9)
 #net=net.cuda()
 train_loss_vs_epoch=[]
 
 for epoch in range(30):
+    print "running epoch "+str(epoch)
     train_loss=0.0
     for batch in train_loader:
+        print "hello"
         net=net.train(True)
         inputs,labels=batch
         inputs,labels=Variable(inputs),Variable(labels)
@@ -68,4 +70,6 @@ for epoch in range(30):
 
     plt.plot(train_loss_vs_epoch,'r')
     plt.savefig('plt.png')
+    plt.show()
+
         

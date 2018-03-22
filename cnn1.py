@@ -42,8 +42,8 @@ transform = transforms.Compose([
             transforms.Normalize(mean = [ 0.485, 0.456, 0.406 ],
                                 std = [ 0.229, 0.224, 0.225 ]),
 ])
-train_path="/home/soham/Documents/Deep Learning/hackathon/train_/train"
-val_path="/home/soham/Documents/Deep Learning/hackathon/train_/val"
+train_path="/media/nibaran/codes/Soham/hackathon dataset/train_/train"
+val_path="/media/nibaran/codes/Soham/hackathon dataset/train_/val"
 
 train_data=datasets.ImageFolder(train_path,transform)
 val_data=datasets.ImageFolder(val_path,transform)
@@ -81,19 +81,20 @@ net.fc=nn.Linear(512,14)
 criterion=nn.CrossEntropyLoss(size_average=True)
 learn_rate=0.1
 optimizer=optim.SGD(net.parameters(),lr=learn_rate,momentum=0.9)
-#net=net.cuda()
+net=nn.DataParallel(net)
+net=net.cuda()
 train_loss_vs_epoch=[]
 val_loss_vs_epoch=[]
 
-for epoch in range(5):
-    print "running epoch "+str(epoch)
+for epoch in range(15):
+    print("running epoch "+str(epoch))
     train_loss=0.0
     val_loss=0.0
     for batch in train_loader:
         net=net.train(True)
         inputs,labels=batch
         inputs,labels=Variable(inputs),Variable(labels)
-        #inputs,labels=inputs.cuda(),labels.cuda()
+        inputs,labels=inputs.cuda(),labels.cuda()
         optimizer.zero_grad()
         outputs=net(inputs)
         loss=criterion(F.log_softmax(outputs),labels)
@@ -108,7 +109,7 @@ for epoch in range(5):
         net=net.train(False)
         inputs,labels=batch
         inputs,labels=Variable(inputs),Variable(labels)
-        #inputs,labels=inputs.cuda(),labels.cuda()
+        inputs,labels=inputs.cuda(),labels.cuda()
         outputs=net(inputs)
         loss=criterion(F.log_softmax(outputs),labels)
         val_loss+=loss.data[0]
@@ -122,7 +123,6 @@ for epoch in range(5):
 
     plt.plot(train_loss_vs_epoch,'r')
     plt.savefig('plt.png')
-    plt.show()
 
 
 torch.save(net,'model.pth')

@@ -34,7 +34,7 @@ transform = transforms.Compose([
 ])
 
 net=torch.load('model.pth')
-path="/home/soham/Documents/Deep Learning/hackathon/excess"
+path="/media/nibaran/codes/Soham/githubrepo/hackathon/excess"
 
 test_data=datasets.ImageFolder(path, transform)
 
@@ -46,4 +46,4 @@ for batch in test_loader:
     inputs=Variable(inputs)
     outputs=net(inputs)
     _, predicted = torch.max(outputs.data, 1)
-    print predicted
+    print(predicted)

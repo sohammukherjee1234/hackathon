@@ -53,7 +53,7 @@ net.fc=nn.Linear(512,14)
 criterion=nn.NLLLoss(size_average=True)
 learn_rate=0.1
 optimizer=optim.Adam(net.parameters())
-net=net.cuda()
+#net=net.cuda()
 train_loss_vs_epoch=[]
 val_loss_vs_epoch=[]
 
@@ -61,11 +61,12 @@ for epoch in range(20):
     print("running epoch "+str(epoch))
     train_loss=0.0
     val_loss=0.0
-    for batch in train_loader:
+    for i,batch in enumerate(train_loader):
+        print("Running Training on "+str(i))
         net=net.train(True)
         inputs,labels=batch
         inputs,labels=Variable(inputs),Variable(labels)
-        inputs,labels=inputs.cuda(),labels.cuda()
+#        inputs,labels=inputs.cuda(),labels.cuda()
         optimizer.zero_grad()
         outputs=net(inputs)
         loss=criterion(F.log_softmax(outputs),labels)
@@ -76,11 +77,12 @@ for epoch in range(20):
     
     train_loss_vs_epoch.append(train_loss/len(train_loader))
     
-    for batch in val_loader:
+    for i,batch in enumerate(val_loader):
+        print("Running validation on "+str(i))
         net=net.train(False)
         inputs,labels=batch
         inputs,labels=Variable(inputs),Variable(labels)
-        inputs,labels=inputs.cuda(),labels.cuda()
+#        inputs,labels=inputs.cuda(),labels.cuda()
         outputs=net(inputs)
         loss=criterion(F.log_softmax(outputs),labels)
         val_loss+=loss.data[0]
@@ -88,11 +90,9 @@ for epoch in range(20):
     val_loss_vs_epoch.append(val_loss/len(val_loader))
     
     plt.plot(train_loss_vs_epoch,'r',val_loss_vs_epoch,'b')
-    plt.savefig('plot.png')
+    plt.savefig('plot1.png')
         
         
 
-    plt.plot(train_loss_vs_epoch,'r')
-    plt.savefig('plt.png')
 
         

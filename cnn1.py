@@ -82,7 +82,7 @@ criterion=nn.CrossEntropyLoss(size_average=True)
 learn_rate=0.1
 optimizer=optim.SGD(net.parameters(),lr=learn_rate,momentum=0.9)
 net=nn.DataParallel(net)
-net=net.cuda()
+#net=net.cuda()
 train_loss_vs_epoch=[]
 val_loss_vs_epoch=[]
 
@@ -94,7 +94,7 @@ for epoch in range(15):
         net=net.train(True)
         inputs,labels=batch
         inputs,labels=Variable(inputs),Variable(labels)
-        inputs,labels=inputs.cuda(),labels.cuda()
+        #inputs,labels=inputs.cuda(),labels.cuda()
         optimizer.zero_grad()
         outputs=net(inputs)
         loss=criterion(F.log_softmax(outputs),labels)
@@ -109,7 +109,7 @@ for epoch in range(15):
         net=net.train(False)
         inputs,labels=batch
         inputs,labels=Variable(inputs),Variable(labels)
-        inputs,labels=inputs.cuda(),labels.cuda()
+        #inputs,labels=inputs.cuda(),labels.cuda()
         outputs=net(inputs)
         loss=criterion(F.log_softmax(outputs),labels)
         val_loss+=loss.data[0]
@@ -125,4 +125,4 @@ for epoch in range(15):
     plt.savefig('plt.png')
 
 
-torch.save(net,'model.pth')
+torch.save(net,'model1.pth')

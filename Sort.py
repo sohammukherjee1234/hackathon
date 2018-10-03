@@ -12,14 +12,14 @@ dest= "/home/soham/Documents/Deep Learning/hackathon/"
 
 #Adding the sample files to test
 ## Just a generator for sample testing. To be removed when you have the files.
-#csv_path=dest+str("testing.csv")
-#f= open(csv_path)
-#readob = csv.reader(f)
-#for row in readob:
-#    if(".png" in row[4]):
-#        ff=open(source+row[4],"w+")
-#        ff.close()
-#f.close()
+csv_path=dest+str("testing.csv")
+f= open(csv_path)
+readob = csv.reader(f)
+for row in readob:
+    if(".png" in row[4]):
+        ff=open(source+row[4],"w+")
+        ff.close()
+f.close()
 
 
 #Sorting the files to appropriate folders
